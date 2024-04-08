@@ -15,7 +15,7 @@ pipeline {
         }
         stage('Push to Docker Registry') {
             steps {
-                withDockerRegistry(credentialsId: '7eb82be1-8078-4675-bf04-eae50181f633') {
+                withDockerRegistry(url: 'https://index.docker.io/v1/', credentialsId: '7eb82be1-8078-4675-bf04-eae50181f633') {
                     sh 'docker push sai3009/my-node-js-app:latest'
                 }
             }
