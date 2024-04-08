@@ -4,27 +4,25 @@ pipeline {
     stages {
         stage('Clone Repository'){
             steps {
-                git branch: 'main', url: 'https://github.com/pankaj-Makhijani/Nodejs-hello-world.git'
+                git branch: 'main', url: 'https://github.com/sainadh30/nodejs.git'
             }
         }
-        stage('Install Dependencies'){
+        stage('Build') {
             steps {
                 sh 'npm install'
+                sh 'docker build . -t sai3009/my-node-js-app:latest'
             }
         }
-        stage('Perform API testing'){
+        stage('Push to Docker Registry') {
             steps {
-                sh 'npm test'
+                withDockerRegistry(credentialsId: '7eb82be1-8078-4675-bf04-eae50181f633', toolName: 'docker') {
+                    sh 'docker push sai3009/my-node-js-app:latest'
+                }
             }
         }
-        stage('Start Application'){
-            input {
-                message "Should we continue?"
-                ok "Yes, we should."
-                submitter "pankaj"
-            }
+        stage('Deploy') {
             steps {
-                sh 'npm start'
+                sh 'sudo docker run -d --name nodetodoapp -p 3000:3000 sai3009/my-node-js-app:latest'
             }
         }
     }
